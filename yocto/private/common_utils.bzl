@@ -114,6 +114,16 @@ def env_to_config(repository_ctx, env, relative_root = "."):
 
     compile_flags.extend(format_command_options(env.get("CFLAGS")))
     link_flags.extend(format_command_options(env.get("LDFLAGS")))
+    link_flags_ext = [
+        "-Wl,-copy-dt-needed-entries",
+        "-Wl,-no-as-needed",
+        "-Wl,-z,relro,-z,now",
+        "-Wl,-v",
+        "-pass-exit-codes",
+        "-Wl,--gc-sections",
+    ]
+
+    link_flags.extend(link_flags_ext)
 
     # only add flags if not in compile_flags
     cxx_flags = [flag for flag in format_command_options(env.get("CXX"), True) if flag not in compile_flags]
